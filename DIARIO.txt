@@ -1,0 +1,1 @@
+Voy a cambiar el declararVariable y le voy a poner el casteo 
