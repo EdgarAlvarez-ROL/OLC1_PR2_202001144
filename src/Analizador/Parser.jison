@@ -175,6 +175,18 @@ ASIGNACION  :    id '=' EXP ';'
             {
                 $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
             }
+            |   id '++' ';'
+            {
+                let info = new AccesoVariable($1, @1.first_line, @1.first_column); 
+                let incdec = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
+                $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
+            }
+            |   id '--' ';'
+            {
+                let info = new AccesoVariable($1, @1.first_line, @1.first_column); 
+                let incdec = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
+                $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
+            }
 ;
 
 
