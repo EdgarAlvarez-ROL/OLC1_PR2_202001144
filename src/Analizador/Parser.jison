@@ -16,6 +16,8 @@
     let Valor                       =   require("../Expresiones/Valor").Valor;
 
     let Incremento_y_Decremento     =   require("../Expresiones/Incremento_y_Decremento").Incremento_y_Decremento;
+    let DeclararVector              =   require("../Instrucciones/DeclararVector").DeclararVector;
+    let AccesoVector                =   require("../Expresiones/AccesoVector").AccesoVector;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -53,6 +55,7 @@ frac                        (?:\.[0-9]+)
 "else"                          {   return 'telse';     }
 "void"                          {   return 'tvoid';     }
 "return"                        {   return 'treturn';   }
+"new"                           {   return 'tnew';      }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -87,6 +90,8 @@ frac                        (?:\.[0-9]+)
 "<"                             {return '<';}
 "{"                             {return '{';}
 "}"                             {return '}';}
+"["                             {return '[';}
+"]"                             {return ']';}
 
 
 .                               {}
@@ -108,6 +113,12 @@ frac                        (?:\.[0-9]+)
 %left '*' '/' '%'
 %right '^^' 
 %right negativo '!' '(' 
+
+
+// %left DECLARACION
+// %left CELDA
+// %left DECLARARVECTOR
+
 
 
 %start INICIO
@@ -155,20 +166,43 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   WHILE                       { $$ = $1; }
 ;
 
-DECLARACION : TIPO  id '=' EXP 
+
+
+CELDA   : id '[' EXP ']'
+        {
+            $$ = new AccesoVector($1, $3, @1.first_line, @1.first_column);
+        }
+;
+
+
+DECLARACION :  TIPO '[' ']' id '=' tnew TIPO '[' EXP ']'
             {
-                $$ = new DeclararVariable($1, $2, $4, undefined, @2.first_line, @2.first_column);
+                // console.log("lista de expresiones del id: " + $4 + " es: " + $9);
+                $$ = new DeclararVariable($1, $4, [$9], undefined, $7, @4.first_line, @4.first_column);
+            }
+            |   TIPO '[' ']' id '=' '{' LISTA_EXP '}'
+            {
+                // console.log("lista de expresiones del id: " + $4 + " es: " + $7);
+                $$ = new DeclararVariable($1, $4, $7, undefined, undefined, @4.first_line, @4.first_column);
+            }
+            | TIPO  id '=' EXP 
+            {
+                $$ = new DeclararVariable($1, $2, $4, undefined, undefined, @2.first_line, @2.first_column);
             }
             | TIPO  id  
             {
-                $$ = new DeclararVariable($1, $2, undefined, undefined, @2.first_line, @2.first_column);
+                $$ = new DeclararVariable($1, $2, undefined, undefined, undefined, @2.first_line, @2.first_column);
             }
             // nuevo
             | TIPO id '=' '(' CASTEO ')' EXP
             {
-                $$ = new DeclararVariable($1, $2, $7, $5, @2.first_line, @2.first_column);
+                $$ = new DeclararVariable($1, $2, $7, $5, undefined, @2.first_line, @2.first_column);
             }
 ;
+
+
+
+
 
 
 ASIGNACION  :    id '=' EXP ';'
@@ -178,15 +212,18 @@ ASIGNACION  :    id '=' EXP ';'
             |   id '++' ';'
             {
                 let info = new AccesoVariable($1, @1.first_line, @1.first_column); 
+                //console.log("papa: " + info);
                 let incdec = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
                 $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
             }
             |   id '--' ';'
             {
-                let info = new AccesoVariable($1, @1.first_line, @1.first_column); 
-                let incdec = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
+                let info22 = new AccesoVariable($1, @1.first_line, @1.first_column); 
+                let incdec22 = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
                 $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
             }
+            //celda = exp
+            // |   CELDA '=' EXP
 ;
 
 
@@ -281,6 +318,8 @@ LISTA_EXP : LISTA_EXP ',' EXP
 LLAMADA_FUNCION     : id '(' LISTA_EXP ')' { $$ = new LlamadaFuncion($1, $3, @1.first_line, @1.first_column);    }
 ;
 
+
+
 EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '-' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '*' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
@@ -301,10 +340,13 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
     |   id                              { $$ = new AccesoVariable($1, @1.first_line, @1.first_column);        }
     |   LLAMADA_FUNCION                 { $$ = $1; }
+    |   CELDA                           { $$ = $1; }
     |   entero                          { $$ = new Valor($1, "integer", @1.first_line, @1.first_column);}
     |   decimal                         { $$ = new Valor($1, "double", @1.first_line, @1.first_column); }
     |   caracter                        { $$ = new Valor($1, "char", @1.first_line, @1.first_column);   }
     |   cadena                          { $$ = new Valor($1, "string", @1.first_line, @1.first_column); }
     |   ttrue                           { $$ = new Valor($1, "true", @1.first_line, @1.first_column);   }
     |   tfalse                          { $$ = new Valor($1, "false", @1.first_line, @1.first_column);  }
+    
+   
 ;

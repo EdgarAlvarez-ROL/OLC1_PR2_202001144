@@ -19,6 +19,9 @@ export class Print extends Instruccion
 
             let exp: Expresion = this.lista_exp[0];
             let res = exp.getValor(actual, global, ast);
+            
+            // console.log(res);
+
             ast.escribirConsola(res.toString());
         } else 
         {

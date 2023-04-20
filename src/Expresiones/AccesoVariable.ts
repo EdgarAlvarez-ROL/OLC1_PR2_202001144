@@ -19,9 +19,15 @@ export class AccesoVariable extends Expresion{
             throw new Error("Sintactico Error: No existe la variable " + this.nombreVar + " " + this.linea + ", " + this.columna);
         }
 
+
         let valor_var = variable.getValor();
         
         this.tipo = variable.getTipo();
+
+        // console.log("ACCESO VARIABLE"); 
+        // console.log(valor_var);
+        // console.log("ACCESO VARIABLE");
+
         return valor_var;
     }
 
