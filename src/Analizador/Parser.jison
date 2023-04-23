@@ -18,6 +18,9 @@
     let Incremento_y_Decremento     =   require("../Expresiones/Incremento_y_Decremento").Incremento_y_Decremento;
     let DeclararVector              =   require("../Instrucciones/DeclararVector").DeclararVector;
     let AccesoVector                =   require("../Expresiones/AccesoVector").AccesoVector;
+    let Cases                       =   require("../Instrucciones/Cases").Cases;
+    let Switch                      =   require("../Instrucciones/Switch").Switch;
+    let Default                     =   require("../Instrucciones/Default").Default;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -51,6 +54,9 @@ frac                        (?:\.[0-9]+)
 "string"                        {   return 'tstring';   }
 "char"                          {   return 'tchar';     }
 "if"                            {   return 'tif';       }
+"switch"                        {   return 'tswitch';   } 
+"case"                          {   return 'tcase';     }
+"default"                       {   return 'tdefault';  }
 "while"                         {   return 'twhile';    }
 "else"                          {   return 'telse';     }
 "void"                          {   return 'tvoid';     }
@@ -101,17 +107,33 @@ frac                        (?:\.[0-9]+)
 
 /* ================= ASOCIATIVIDAD y PRECEDENCIA DE OPERADORES ===============
 /*Operaciones logicas*/
-%left '++' '--'
-%left '^'
+
+// %left '^'
+// %left '||'
+// %left '&&'
+// %left '!=' '==' '==='
+// %left '>' '<' '<=' '>=' 
+// %left '++' '--'
+
+// /*Operaciones numericas*/
+// %left '+' '-'
+// %left '*' '/' '%'
+// %right '^^' 
+// %right negativo '!' '(' 
+
+
+//Carrier Priority TEMPORAL
 %left '||'
 %left '&&'
-%left '!=' '==' '==='
-%left '>' '<' '<=' '>=' 
-
-/*Operaciones numericas*/
+%left '^'
+%left '==', '!='
+%left '>=', '<=', '<', '>'
 %left '+' '-'
-%left '*' '/' '%'
-%right '^^' 
+%left '*' '/','%'
+%left '!'
+// %left '.' '[' ']'
+%left '++' '--'
+%left '?' ':'
 %right negativo '!' '(' 
 
 
@@ -162,6 +184,7 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
             |   ASIGNACION                  { $$ = $1; }
             |   IF                          { $$ = $1; }
+            |   SWITCH                      { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
 ;
@@ -201,29 +224,45 @@ DECLARACION :  TIPO '[' ']' id '=' tnew TIPO '[' EXP ']'
 ;
 
 
+SWITCH :    tswitch '(' EXP ')' '{' CASOES DEFAULTED '}'    { $$= new Switch($3, $6, $7, @1.first_line, @1.first_column); }
+       |    tswitch '(' EXP ')' '{' CASOES '}'              { $$= new Switch($3, $6, undefined, @1.first_line, @1.first_column); }
+       |    tswitch '(' EXP ')' '{' DEFAULTED '}'           { $$= new Switch($3, undefined, $6, @1.first_line, @1.first_column); }
+;
+
+CASOES :   CASOES CASESS          
+            { 
+                $1.push($2);
+                $$= $1; 
+            }
+        |   CASESS                  { $$ = [$1]; }
+;
+
+CASESS:     tcase EXP ':' SENTENCIAS { $$ = new Cases($2, $4, @1.first_line, @1.first_column); }
+;
+
+DEFAULTED:  tdefault ':' SENTENCIAS { $$ = new Default($3, @1.first_line, @1.first_column); }
+;
 
 
 
-
-ASIGNACION  :    id '=' EXP ';'
+ASIGNACION  :   id '=' EXP ';'
             {
-                $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
+                $$ = new Asignacion($1, $3, "0", @1.first_line, @1.first_column);
             }
             |   id '++' ';'
             {
                 let info = new AccesoVariable($1, @1.first_line, @1.first_column); 
                 //console.log("papa: " + info);
                 let incdec = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
-                $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
+                $$ = new Asignacion($1, incdec, "0", @1.first_line, @1.first_column);
             }
             |   id '--' ';'
             {
                 let info22 = new AccesoVariable($1, @1.first_line, @1.first_column); 
                 let incdec22 = new Incremento_y_Decremento(info, $2, @2.first_line, @2.first_column);
-                $$ = new Asignacion($1, incdec, @1.first_line, @1.first_column);
+                $$ = new Asignacion($1, incdec, "0", @1.first_line, @1.first_column);
             }
-            //celda = exp
-            // |   CELDA '=' EXP
+            // FALTA ASIGNACION DE VECTOR NUMERO 1 RESPECTIVO
 ;
 
 
@@ -256,15 +295,7 @@ WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
         }
 ;
 
-FUNCION:        TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
-            {
-                $$ = new DeclararFuncion($1, $2, $4, $6, @2.first_line, @2.first_column);
-            }
-            |   tvoid   id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
-            {
-                $$ = new DeclararFuncion(new Tipo(TipoPrimitivo.Void), $2, $4, $6, @2.first_line, @2.first_column);
-            }
-            |   TIPO    id '('  ')' BLOQUE_SENTENCAS
+FUNCION:        TIPO    id '('  ')' BLOQUE_SENTENCAS
             {
                 $$ = new DeclararFuncion($1, $2, [], $5, @2.first_line, @2.first_column);
             }
@@ -272,6 +303,15 @@ FUNCION:        TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
             {
                 $$ = new DeclararFuncion(new Tipo(TipoPrimitivo.Void), $2, [], $5, @2.first_line, @2.first_column);
             }
+            |   TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
+            {
+                $$ = new DeclararFuncion($1, $2, $4, $6, @2.first_line, @2.first_column);
+            }
+            |   tvoid   id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
+            {
+                $$ = new DeclararFuncion(new Tipo(TipoPrimitivo.Void), $2, $4, $6, @2.first_line, @2.first_column);
+            }
+            
 ;
 
 
