@@ -26,7 +26,7 @@ export class If extends Instruccion {
         // Verificar tipo booleano
         if(this.exp_condicion.tipo.getPrimitivo() != TipoPrimitivo.Boolean) {
             // * ERROR * 
-            return
+            throw new Error("ERROR en el IF.ts la validacion no es de tipo booleano " + this.exp_condicion);
         }
 
         if ( condicion ){
@@ -36,6 +36,7 @@ export class If extends Instruccion {
             for(let sentencia of this.sentencias){
                 if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);
                 if(sentencia instanceof Expresion) sentencia.getValor(ambito_if, global, ast);
+                
             }
         }else {
             let ambito_else = new Ambito(actual);

@@ -34,8 +34,8 @@ export class DeclararVector extends Instruccion{
         console.log(actual.existeVariable(this.id));
         if( actual.existeVariable(this.id) ) {
             // * ERROR *
-            throw new Error("Variable ya se encuentra definida en el entorno actual: " + this.linea + " , " + this.columna);
-        }
+            throw new Error("Vect0r ya se encuentra definida en el entorno actual: " + this.linea + " , " + this.columna);
+        }else{
 
         let listavacia = [];
         if (this.tipo1.getPrimitivo() == this.tipo2.getPrimitivo()){
@@ -109,7 +109,7 @@ export class DeclararVector extends Instruccion{
         // console.log("=============");
 
         actual.insertarVariable(this.id, nueva_var);
-
+    }
     }
 
 }

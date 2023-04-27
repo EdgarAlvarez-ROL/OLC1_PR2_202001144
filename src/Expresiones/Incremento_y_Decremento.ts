@@ -44,7 +44,7 @@ export class Incremento_y_Decremento extends Expresion {
         // TIPO INTEGER
         else if (prim1 == TipoPrimitivo.Integer) {
             this.tipo = new Tipo(TipoPrimitivo.Integer);
-            return val1 + 1;
+            return 1 + val1;
         } 
         /* TALVEZ SE VA A BORRAR ESTO */
         else if (prim1 == TipoPrimitivo.String)

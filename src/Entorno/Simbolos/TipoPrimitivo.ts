@@ -5,5 +5,12 @@ export enum TipoPrimitivo {
     String,
     Null,
     Boolean,
-    Void
+    Void,
+    Retornable_como_la_coca
+}
+
+
+export type Retorno = {
+    value: any,
+    type: TipoPrimitivo
 }

@@ -31,13 +31,18 @@ export class DeclararVariable extends Instruccion{
         // console.log(Array.isArray(this.exp));
 
         let PUTA = Array.isArray(this.exp);
-        
+        // actual = new Ambito(actual);
         // Verificar que no exista variable
         console.log(actual.existeVariable(this.id));
         if( actual.existeVariable(this.id) ) {
             // * ERROR *
-            throw new Error("Variable ya se encuentra definida en el entorno actual: " + this.linea + " , " + this.columna);
-        }
+            
+            throw new Error("Variable: " + this.id + " ya se encuentra definida en el entorno actual: " + this.linea + " , " + this.columna);
+            
+            
+        }else{
+
+        
 
         let res
         let temp
@@ -107,7 +112,7 @@ export class DeclararVariable extends Instruccion{
                 res = this.exp.getValor(actual, global, ast);
                 if(this.tipo.getPrimitivo() != this.exp.tipo.getPrimitivo()) {
 
-                    if(this.casteo.getPrimitivo() != undefined){
+                    if(this.casteo != undefined){
                         // Castear la variable a una nueva
                         res = this.castear(res, this.exp.tipo.getPrimitivo(), this.casteo.getPrimitivo());
                         //==========================================================
@@ -139,8 +144,10 @@ export class DeclararVariable extends Instruccion{
 
         let nueva_var = new Variable(this.tipo, this.id, res);
         actual.insertarVariable(this.id,nueva_var);
-
     }
+        
+    }
+
 
 
     public castear(expre, tipo_expre, cast) {

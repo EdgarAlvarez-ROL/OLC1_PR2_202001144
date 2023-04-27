@@ -20,8 +20,11 @@ export class Raiz {
             let ambito_global:Ambito = new Ambito(undefined);
             let ambito_actual:Ambito = ambito_global;
 
+            
             this.ejecutarDeclaracionesVar(ambito_actual, ambito_global, ast);
             this.ejecutarDeclaracionesFunciones(ambito_actual, ambito_global, ast);
+            
+            
 
             for(let x = 0; x < this.sentencias.length ; x++)
             {

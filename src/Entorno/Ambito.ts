@@ -44,4 +44,8 @@ export class Ambito {
     public existeVariable(id :string) : boolean {
         return this.tabla_variables.get(id) != undefined;
     }
+
+    public existeFuncion(id :string) : boolean {
+        return this.tabla_funciones.get(id) != undefined;
+    }
 }

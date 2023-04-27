@@ -52,7 +52,7 @@ export class AccesoVector extends Expresion{
         // console.log(n);
         // console.log("ACCESO alsñkjf");
         // return devuelta;
-
+        // return { this.valor = devuelta; this.tipo ='integer' };
 
         switch(variable.tipo.getPrimitivo()) {
             case TipoPrimitivo.Integer:
