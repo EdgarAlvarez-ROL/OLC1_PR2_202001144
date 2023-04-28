@@ -6,6 +6,9 @@ import { Instruccion } from "../Entorno/Instruccion";
 import { Nodo } from "../Entorno/Nodo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 
+import { Return } from "./Sentencias_de_Transicion/Return";
+import { Tipo } from "../Entorno/Simbolos/Tipo";
+
 export class If extends Instruccion {
     
     exp_condicion   : Expresion;
@@ -33,10 +36,23 @@ export class If extends Instruccion {
             // Crear ambito nuevo
             let ambito_if = new Ambito(actual);
 
+            let retorno;
+            let tipotipo;
+
             for(let sentencia of this.sentencias){
                 if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);
                 if(sentencia instanceof Expresion) sentencia.getValor(ambito_if, global, ast);
-                
+                // en vias de parar todo
+                // if(sentencia instanceof Return) {
+                //     let paella = sentencia.getValor(ambito_if, global, ast);
+                //     console.log("Paella: " + paella);
+                //     // let coso = sentencia.getTipo(ambito_if, global, ast);
+                //     // tipotipo = coso;
+                //     // this.tipo = new Tipo(tipotipo.getPrimitivo())
+                //     return paella
+
+                //     break;
+                // } 
             }
         }else {
             let ambito_else = new Ambito(actual);

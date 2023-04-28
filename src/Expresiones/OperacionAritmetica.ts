@@ -24,10 +24,6 @@ export class OperacionAritmetica extends Expresion {
         let tipo2   = this.exp2.tipo;
 
         switch(this.signo) {
-            case "-" :
-                {
-                    return this.Negative(val1, tipo1, val2, tipo2, actual, global, ast);
-                }
             case "+" :
                 {
                     return this.Suma(val1, tipo1, val2, tipo2, actual, global, ast);
@@ -48,6 +44,10 @@ export class OperacionAritmetica extends Expresion {
             {
                     return this.Potencia(val1, tipo1, val2, tipo2, actual, global, ast);
             }
+            case "NIGA" :
+                {
+                    return this.Negative(val1, tipo1, val2, tipo2, actual, global, ast);
+                }
         }
     }
 

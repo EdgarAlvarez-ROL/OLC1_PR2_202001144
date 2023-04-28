@@ -6,6 +6,10 @@ import { Print } from "../Instrucciones/Print";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Asignacion } from "../Instrucciones/Asignacion";
 import { Variable } from "../Entorno/Simbolos/Variable";
+import { Return } from "../Instrucciones/Sentencias_de_Transicion/Return";
+import { Valor } from "./Valor";
+import { Tipo } from "../Entorno/Simbolos/Tipo";
+
 
 export class LlamadaFuncion extends Expresion {
     
@@ -85,6 +89,69 @@ export class LlamadaFuncion extends Expresion {
                                 } 
                                 
                             }
+                        }else{ // Funciones con Tipo
+                            let retorno;
+                            let tipotipo;
+                            let sentenciasFuncion = funcionP.getSentencias();
+                            let declaracionFuncion = funcionP.getParametros();
+    
+                            if (this.lista_exp.length == 0) {
+                                // console.log("Entramos en lista 0");
+                                for(let sentencia of sentenciasFuncion){
+                                    if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_local, global, ast);
+                                    if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
+                                    if(sentencia instanceof Return) {
+                                        let paella = sentencia.getValor(ambito_local, global, ast);
+                                        // console.log("Paella: " + paella);
+                                        retorno = paella;
+                                        tipotipo = sentencia.getTipo(ambito_local, global, ast);
+                                    } 
+                                }
+                            }else{
+                                for (let i = 0; i < this.lista_exp.length; i++) {
+                                    let value = this.lista_exp[i];
+                                    
+                                    let parara = value.getValor(actual,global,ast)
+                                    // console.log(value.tipo.getPrimitivo());
+                                    let cua = value.tipo.getPrimitivo();
+
+
+                                    if(funcionP.parametros[i].tipo.getPrimitivo() == cua){
+                                        let nombreParametro = funcionP.getNombre();
+                                        
+                                        let valor_asig = value.getValor(actual, global, ast);
+                                        
+                                        // console.log("alsdjfañsldfjañl");
+                                        // console.log()
+                                        
+                                        let asinga = new Asignacion(declaracionFuncion[i].id, value, "0", this.linea, this.columna);
+                                        asinga.ejecutar(actual, global, ast);
+                                        
+                                       
+                                    }
+                                }
+
+
+                                for(let sentencia of sentenciasFuncion){
+                                    if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_local, global, ast);
+                                    if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
+                                    if(sentencia instanceof Return) {
+                                        let paella = sentencia.getValor(ambito_local, global, ast);
+                                        // console.log("Paella: " + paella);
+                                        retorno = paella;
+                                        let coso = sentencia.getTipo(ambito_local, global, ast);
+                                        
+                                        tipotipo = coso;
+                                        console.log("TIPO fasdfasfdafs  ");
+                                        console.log(tipotipo);
+                                    } 
+                                }
+
+                            }
+
+                            
+                            this.tipo = new Tipo(tipotipo.getPrimitivo())
+                            return retorno
                         }
                         
                     }else{

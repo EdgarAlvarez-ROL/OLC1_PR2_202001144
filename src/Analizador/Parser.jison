@@ -33,6 +33,10 @@
     let typeOf                      =   require("../Expresiones/Funciones_Reservadas/typeOf").typeOf;
     let TtoString                   =   require("../Expresiones/Funciones_Reservadas/TtoString").TtoString;
     let toCharArray                 =   require("../Expresiones/Funciones_Reservadas/toCharArray").toCharArray;
+
+    // SENTENCIAS DE TRANSFERENCIA
+    let Return                      =   require("../Instrucciones/Sentencias_de_Transicion/Return").Return;                
+
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -210,6 +214,7 @@ BLOQUE_SENTENCAS : '{' SENTENCIAS '}'
 SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
             |   ASIGNACION ';'                 { $$ = $1; }
+            |   SENTENCIAS_TRANSFERENCIA    { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   SWITCH                      { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
@@ -422,7 +427,7 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '++'                        { $$ = new Incremento_y_Decremento($1, $2, @2.first_line, @2.first_column);}
     |   EXP '--'                        { $$ = new Incremento_y_Decremento($1, $2, @2.first_line, @2.first_column);}
     //nuevo
-    |   '-' EXP %prec negativo          { $$ = new OperacionAritmetica($2, $1, $2, @1.first_line, @1.first_column);}
+    |   '-' EXP %prec negativo          { $$ = new OperacionAritmetica($2, "NIGA", $2, @1.first_line, @1.first_column);}
     |   '(' EXP ')'                     { $$ = $2;}
     |   EXP '=='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '!='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
@@ -433,7 +438,7 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '&&'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
     |   id                              { $$ = new AccesoVariable($1, @1.first_line, @1.first_column);        }
-    // |   LLAMADA_FUNCION                 { $$ = $1; }
+    |   LLAMADA_FUNCION                 { $$ = $1; }
     |   CELDA                           { $$ = $1; }
     |   toLower '(' EXP ')'             { $$ = new toLower($3, @1.first_line, @1.first_column); }
     |   toUpper '(' EXP ')'             { $$ = new toUpper($3, @1.first_line, @1.first_column); }
@@ -449,6 +454,8 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   cadena                          { $$ = new Valor($1, "string", @1.first_line, @1.first_column); }
     |   ttrue                           { $$ = new Valor($1, "true", @1.first_line, @1.first_column);   }
     |   tfalse                          { $$ = new Valor($1, "false", @1.first_line, @1.first_column);  }
-    
-   
+;
+
+SENTENCIAS_TRANSFERENCIA : treturn EXP ';' { $$ = new Return($2, @1.first_line, @1.first_column); }
+
 ;
