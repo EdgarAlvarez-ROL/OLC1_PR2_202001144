@@ -38,10 +38,32 @@ export class If extends Instruccion {
 
             let retorno;
             let tipotipo;
-
+            let x;
             for(let sentencia of this.sentencias){
-                if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);
+                if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);/* {
+                    x = sentencia.ejecutar(ambito_if, global, ast);
+                    console.log("IF");
+                    console.log(x);
+                    retorno = x["valor"];
+                    tipotipo  = x["tipo"];
+                    break;
+                }
+                */
+                
                 if(sentencia instanceof Expresion) sentencia.getValor(ambito_if, global, ast);
+                if(sentencia instanceof Return) {
+                    x = sentencia.ejecutar(ambito_if, global, ast);
+                    
+                  
+                    retorno = x;
+                    console.log("IF retorno");
+                    console.log(retorno);
+                    // tipotipo  = x["tipo"];
+                    break;
+                }
+
+
+
                 // en vias de parar todo
                 // if(sentencia instanceof Return) {
                 //     let paella = sentencia.getValor(ambito_if, global, ast);
@@ -54,6 +76,8 @@ export class If extends Instruccion {
                 //     break;
                 // } 
             }
+            // this.tipo = new Tipo(tipotipo.getPrimitivo())
+            return retorno;
         }else {
             let ambito_else = new Ambito(actual);
             for(let sentencia of this.sentencias_else){

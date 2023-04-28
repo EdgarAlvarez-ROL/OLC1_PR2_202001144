@@ -8,7 +8,7 @@ import { Tipo } from "../../Entorno/Simbolos/Tipo";
 
 import { Variable } from "../../Entorno/Simbolos/Variable";
 
-export class Return extends Expresion {
+export class Return extends Instruccion {
     public valor: Expresion | null;
 
     constructor(valor: Expresion | null, linea: number, columna: number) {
@@ -16,17 +16,17 @@ export class Return extends Expresion {
         this.valor = valor;
     }
 
-    public getValor(actual: Ambito, global: Ambito, ast: AST) {
-        let resultado = null;
+    public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
+        let resultado;
         if (this.valor != null) {
             resultado = this.valor.getValor(actual, global, ast);
             let tipo1   = this.valor.tipo;
-            console.log("Ebtramos en Return PUTO " + resultado);
+            // console.log("Ebtramos en Return " + resultado);
             // console.log("TIPO TIPO " + tipo1.getPrimitivo());
             // let tipo1   = this.valor.tipo;
             // this.tipo = new Tipo(TipoPrimitivo.Integer);
             // console.log(resultado.tipo)
-            return resultado
+            return {inst:'Return', valor: resultado, tipo:tipo1, linea:this.linea, columna:this.columna}
         }
         throw new ReturnException(resultado);
     }
