@@ -97,18 +97,37 @@ export class LlamadaFuncion extends Expresion {
                             let declaracionFuncion = funcionP.getParametros();
     
                             if (this.lista_exp.length == 0) {
+                                let x;
                                 // console.log("Entramos en lista 0");
                                 for(let sentencia of sentenciasFuncion){
-                                    if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_local, global, ast);
+                                    if(sentencia instanceof Instruccion) {
+                                        x = sentencia.ejecutar(ambito_local, global, ast);
+                                        if(x == undefined){
+                                            continue
+                                        }else{
+                                            if(x["inst"] == "Return"){
+                                                console.log("inst del if Instruccion Return");
+                                                console.log(x);
+                                                retorno = x["valor"];
+                                                tipotipo  = x["tipo"];
+                                                break;
+                                            }else{
+                                                continue;
+                                            }
+                                        }
+                                    }
                                     if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
-                                    // if(sentencia instanceof Return) {
-                                    //     let paella = sentencia.getValor(ambito_local, global, ast);
-                                    //     // console.log("Paella: " + paella);
-                                    //     retorno = paella;
-                                    //     tipotipo = sentencia.getTipo(ambito_local, global, ast);
-                                    // } 
+                                    if(sentencia instanceof Return) {
+                                        x = sentencia.ejecutar(ambito_local, global, ast);
+                                        console.log("inst Return");
+                                        console.log(x);
+                                        retorno = x["valor"];
+                                        tipotipo  = x["tipo"];
+                                        break;
+                                    }
                                 }
                             }else{
+                                let x;
                                 for (let i = 0; i < this.lista_exp.length; i++) {
                                     let value = this.lista_exp[i];
                                     
@@ -129,7 +148,7 @@ export class LlamadaFuncion extends Expresion {
                                     }
                                 }
 
-                                let x;
+                                
                                 for(let sentencia of sentenciasFuncion){
                                     if(sentencia instanceof Instruccion) {
                                         x = sentencia.ejecutar(ambito_local, global, ast);
@@ -146,9 +165,6 @@ export class LlamadaFuncion extends Expresion {
                                                 continue;
                                             }
                                         }
-                                        
-                                        
-                                        
                                     }
                                     if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
                                     if(sentencia instanceof Return) {
