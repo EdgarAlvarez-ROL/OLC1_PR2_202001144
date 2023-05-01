@@ -4,7 +4,6 @@ export class AST {
 
     /*  Nodo Raiz de ejecucion */
     private raiz:   Raiz;
-
     private salida_cadena:  string;
 
     constructor (raiz:Raiz) {
@@ -25,5 +24,9 @@ export class AST {
     public getSalida() {
         return this.salida_cadena;
     }
+
+    // public getSIMLISTA(){
+    //     return 
+    // }
 
 }

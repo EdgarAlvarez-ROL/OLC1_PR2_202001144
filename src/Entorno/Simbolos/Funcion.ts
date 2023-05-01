@@ -10,12 +10,16 @@ export class Funcion {
     nombre:         string;
     parametros:     DeclararVariable[];
     sentencias:     Nodo[];
+    linea:          number;
+    columna:        number;
 
-    constructor(tipo: Tipo, nombre: string, parametros: DeclararVariable[], sentencias: Nodo[]) {
+    constructor(tipo: Tipo, nombre: string, parametros: DeclararVariable[], sentencias: Nodo[], linea:number, columna:number) {
         this.tipo = tipo;
         this.nombre = nombre;
         this.parametros = parametros;
         this.sentencias = sentencias;
+        this.linea = linea;
+        this.columna = columna;
     }
 
     public getNombre(): string {

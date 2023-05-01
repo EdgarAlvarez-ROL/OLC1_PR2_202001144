@@ -7,6 +7,7 @@ import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Variable } from "../Entorno/Simbolos/Variable";
 
 
+
 export class DeclararVariable extends Instruccion{
     
 
@@ -142,8 +143,10 @@ export class DeclararVariable extends Instruccion{
         // console.log(res);
         // console.log("RESSSSSSSSSSSSSSS");
 
-        let nueva_var = new Variable(this.tipo, this.id, res);
+        let nueva_var = new Variable(this.tipo, this.id, res, this.linea, this.columna);
         actual.insertarVariable(this.id,nueva_var);
+        this.txtListaSimbolos()
+        
     }
         
     }
@@ -190,4 +193,46 @@ export class DeclararVariable extends Instruccion{
         // console.log("la casteada return es: "+ variable_casteada);
         return variable_casteada;
     }
+
+
+    public txtListaSimbolos(){  
+        const fs = require("fs");
+        
+        // LECTURA o ESCRITURA r o w
+        // fs.readFile("sample.txt", (err, data) => {
+        //     if (err) throw err;
+        //     console.log(data.toString());
+        //  });
+
+        // Limpiar el archivo a blanco
+        // fs.writeFile("./Txt/document.txt", "", (err) => {
+        // if (err) throw err;
+        // // console.log("Completed!");
+        // });
+
+        // \nToken
+        let pere;
+        if(this.tipo.getPrimitivo() === TipoPrimitivo.Integer){
+            pere = "Integer";
+        }else if(this.tipo.getPrimitivo() === TipoPrimitivo.Double){
+            pere = "Double";
+        } else if(this.tipo.getPrimitivo() === TipoPrimitivo.String) {
+            pere = "String";
+        } else if(this.tipo.getPrimitivo() === TipoPrimitivo.Char) {
+            pere = "Char";
+        } else if(this.tipo.getPrimitivo() === TipoPrimitivo.Boolean) {
+            pere = "Boolean";
+        }
+        let estructura_Simbolo = this.id + "##Variable##" + pere + "##Entorno##" + (this.linea).toString() + "##" + (this.columna).toString() + "\n";
+        
+        
+
+        fs.appendFile('./Txt/document.txt', estructura_Simbolo, (error)=>{
+            if(error){
+                throw error;
+            }
+            // console.log('Simbolo Ingresado');
+        });
+    }
+
 }

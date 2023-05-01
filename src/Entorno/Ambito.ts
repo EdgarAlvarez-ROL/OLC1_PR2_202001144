@@ -48,4 +48,8 @@ export class Ambito {
     public existeFuncion(id :string) : boolean {
         return this.tabla_funciones.get(id) != undefined;
     }
+
+    public getListaSimbolos(){
+        return this.tabla_variables;
+    }
 }

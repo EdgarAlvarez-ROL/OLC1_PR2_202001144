@@ -29,6 +29,9 @@ export class LlamadaFuncion extends Expresion {
             case "print":
                 {
                     let print = new Print(this.lista_exp, this.linea, this.columna);
+                    // console.log("\n Imprimiendo lista de simbolos");
+                    // let listilla_Simbolos = actual.getListaSimbolos();
+                    // console.log(actual);
                     return print.ejecutar(actual, global, ast);
                 }
             default:

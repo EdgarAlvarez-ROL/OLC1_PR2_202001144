@@ -29,7 +29,7 @@ export class DeclararFuncion extends Instruccion {
             param.ejecutar(actual, global, ast);
         }
 
-        let functionnn = new Funcion(this.tipo, this.nombre, this.parametros, this.sentencias);
+        let functionnn = new Funcion(this.tipo, this.nombre, this.parametros, this.sentencias, this.linea, this.columna);
 
         actual.insertarFuncion(this.nombre, functionnn);
 

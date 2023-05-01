@@ -18,15 +18,17 @@ export class length extends Expresion {
     public getValor(actual, global, ast){
         let valor = this.exp.getValor(actual, global,ast);
         
-        let tipo1   = this.exp.tipo;
-        let prim1:TipoPrimitivo = tipo1.getPrimitivo();
+        let tipo   = this.exp.tipo;
+        console.log(this.exp.tipo.getPrimitivo());
+        // let prim1:TipoPrimitivo = tipo.getPrimitivo();
 
-        if (tipo1.getPrimitivo() == TipoPrimitivo.String) {
+        if (tipo.getPrimitivo() == TipoPrimitivo.String) {
             this.tipo = new Tipo(TipoPrimitivo.String);
             return ((valor.toString()).length)
-        }else if(tipo1.getPrimitivo() == TipoPrimitivo.Char){
+        }else if(tipo.getPrimitivo() == TipoPrimitivo.Char){
             return ((valor.toString()).length)
-        }else if(tipo1.getPrimitivo() != undefined){
+        }else if(tipo.getPrimitivo() != undefined){
+            this.tipo   = new Tipo(tipo.getPrimitivo());
             return (valor.length)
         }else{
             throw new Error("Length: Error semantico " + this.linea + " , " + this.columna);

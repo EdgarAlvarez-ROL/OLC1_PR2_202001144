@@ -9,6 +9,8 @@ import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Return } from "./Sentencias_de_Transicion/Return";
 import { Tipo } from "../Entorno/Simbolos/Tipo";
 
+// import Digraph from "graphviz-node/lib/digraph";
+
 export class If extends Instruccion {
     
     exp_condicion   : Expresion;

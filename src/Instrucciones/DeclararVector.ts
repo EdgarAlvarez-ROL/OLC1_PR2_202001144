@@ -102,7 +102,7 @@ export class DeclararVector extends Instruccion{
         // console.log("=============");
 
 
-        let nueva_var = new Variable(this.tipo1, this.id, listavacia);
+        let nueva_var = new Variable(this.tipo1, this.id, listavacia, this.linea, this.columna);
 
         // console.log("=============");
         // console.log(nueva_var);

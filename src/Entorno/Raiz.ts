@@ -24,7 +24,6 @@ export class Raiz {
             this.ejecutarDeclaracionesVar(ambito_actual, ambito_global, ast);
             this.ejecutarDeclaracionesFunciones(ambito_actual, ambito_global, ast);
             
-            
 
             for(let x = 0; x < this.sentencias.length ; x++)
             {
@@ -33,8 +32,20 @@ export class Raiz {
                 {
                     if(sent instanceof Instruccion) sent.ejecutar(ambito_actual, ambito_global, ast);
                     else if(sent instanceof Expresion) sent.getValor(ambito_actual, ambito_global, ast);
+                    
                 }
+                
             }  
+
+            // Solo las variable locales agarra
+            // console.log("Imprimiendo lista de simbolos");
+            // let listilla_Simbolos = ambito_actual.getListaSimbolos();
+            // console.log(ambito_actual);
+
+            
+
+            
+            
         }catch(ex){
             ast.escribirConsola("ERROR => " + ex.message);
             console.log(ex);

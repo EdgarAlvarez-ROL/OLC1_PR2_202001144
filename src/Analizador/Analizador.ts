@@ -33,4 +33,8 @@ export class Analizador
             return false;
         }
     }
+
+    // public getListaSimbolos_Analizador(){
+
+    // }
 }
