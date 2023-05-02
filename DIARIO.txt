@@ -1,0 +1,44 @@
+CASTEO LISTO backup en Github
+
+tocamos las cosas de asignacion
+
+Funcion lo nuevo de asignacion
+
+Empezamos los vectores Domingo 16
+
+================================================================
+//Ejemplo de declaración tipo 1
+int[ ] vector1 = new int[4]; //se crea un vector de 4 posiciones, con 0 en cada posición
+//Ejemplo de declaración tipo 2
+string[ ] vector2 = {"hola", "Mundo"}; 
+================================================================
+
+cambien las mayusculas de tipo en el PARSER
+
+LISTAS DE VECTORES PRIMER PARTE LISTO solo el declarado
+Empiezo la parte de obtener los valores de cada celda id[]
+
+Ya agarro tomar el dato que Es 
+
+AHora empezamos con sentencias de control
+SWITCH
+
+no hemos probado los .ts pero falta el Parser.json ponerle el SWITCH
+
+////////////////////FALTA EL BREAK, CONTINUE Y RETURN y el cambiar un dato de un vector
+
+toca sentencias Ciclicas
+WHILE check
+FOR check
+Do WHILE check
+
+
+// ================ ATENCION ================
+
+Cambie el puntoycoma en asignacion ahora tocara ver si esto afecta otras cosas;
+arreglar incrementeo y decremento de tipo
+edad++;
+edad--;
+
+// ================ ATENCION ================
+

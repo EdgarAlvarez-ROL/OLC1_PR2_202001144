@@ -1,0 +1,12 @@
+a##Variable##Integer##Entorno##2##8
+b##Variable##Double##Entorno##10##11
+b2##Variable##Integer##Entorno##12##8
+c##Variable##Double##Entorno##15##11
+cc##Variable##Double##Entorno##19##11
+x##Variable##String##Entorno##24##11
+z##Variable##Double##Entorno##26##11
+y##Variable##Integer##Entorno##25##8
+xx##Variable##Char##Entorno##27##9
+yy##Variable##Boolean##Entorno##28##12
+cadena##Variable##String##Entorno##35##11
+numero##Variable##Integer##Entorno##38##8
