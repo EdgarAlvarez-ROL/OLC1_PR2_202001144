@@ -1,0 +1,2 @@
+vector2##Variable##String##Entorno##1##10
+vectornumero##Variable##Integer##Entorno##2##7
