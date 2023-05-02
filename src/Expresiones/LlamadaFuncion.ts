@@ -77,7 +77,7 @@ export class LlamadaFuncion extends Expresion {
                                             // console.log("alsdjfañsldfjañl");
                                             // console.log()
                                             
-                                            let asinga = new Asignacion(declaracionFuncion[i].id, value, "0", this.linea, this.columna);
+                                            let asinga = new Asignacion(declaracionFuncion[i].id, value, "0", undefined, this.linea, this.columna);
                                             asinga.ejecutar(actual, global, ast);
                                             
                                            
@@ -144,7 +144,7 @@ export class LlamadaFuncion extends Expresion {
                                         let valor_asig = value.getValor(actual, global, ast);
                                         // console.log("alsdjfañsldfjañl");
                                         // console.log()
-                                        let asinga = new Asignacion(declaracionFuncion[i].id, value, "0", this.linea, this.columna);
+                                        let asinga = new Asignacion(declaracionFuncion[i].id, value, "0", undefined, this.linea, this.columna);
                                         asinga.ejecutar(actual, global, ast);
                                         
                                        
