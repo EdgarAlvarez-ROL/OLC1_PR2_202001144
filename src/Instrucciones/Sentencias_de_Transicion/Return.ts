@@ -8,6 +8,13 @@ import { Tipo } from "../../Entorno/Simbolos/Tipo";
 
 import { Variable } from "../../Entorno/Simbolos/Variable";
 
+
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../../Consola/Consola";
+
+
 export class Return extends Instruccion {
     public valor: Expresion | null;
 
@@ -42,6 +49,17 @@ export class Return extends Instruccion {
             return tipo1
         }
     }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance()
+        //Si me ejecuto quiere decir que soy un error porque el break no se tiene que ejecutar solo es una clase bandera.
+        const name_node = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instrucción\\>\\nReturn"];        
+        `)
+    }
+
 }
 
 class ReturnException {

@@ -9,6 +9,11 @@ import { Cases } from "./Cases";
 import { FORMERR } from "dns";
 import { Default } from "./Default";
 
+
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+import { Consola } from "../Consola/Consola";
+
 export class Switch extends Instruccion {
     
     exp_condicion   : Expresion;
@@ -59,5 +64,36 @@ export class Switch extends Instruccion {
             }
         }
     }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance()
+        const name_node = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instruccion\\>\\nSwitch"];`)
+        var cont = 0;
+        var inst_line_anterior = 0;
+        var inst_col_anterior = 0;
+        var valorUltimoCase = 0;
+        if (this.cases != undefined) {
+            for (let instruccion of this.cases) {
+                if (cont == 0) {
+                    consola.set_Ast(`${name_node}->instruccion_${instruccion.linea}_${instruccion.columna}_;`)
+                } else {
+                    consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${instruccion.linea}_${instruccion.columna}_;`)
+                }
+                inst_line_anterior = instruccion.linea;
+                inst_col_anterior = instruccion.columna;
+                instruccion.ast()
+                cont++;
+            }
+        }
+
+        if (this.sentencias_def != null) {
+            consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_${valorUltimoCase}->instruccion_${this.sentencias_def.linea}_${this.sentencias_def.columna}_`)
+            this.sentencias_def.ast() 
+        }
+    }
+
 
 }

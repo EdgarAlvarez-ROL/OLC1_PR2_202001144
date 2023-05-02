@@ -4,7 +4,11 @@ import cookieParser from 'cookie-parser';
 import bodyParser   from 'body-parser';
 import { Analizador } from './Analizador/Analizador';
 import { AST } from './Entorno/AST';
+
 // import { publicDecrypt } from 'crypto';
+
+import { DiGraph } from 'digraph-js';
+import { Consola } from './Consola/Consola';
 
 const app = express();
 const port = 3000;
@@ -49,6 +53,7 @@ app.post('/ejecutar', (req, res) => {
     });
     // FIN Limpiar el archivo a blanco
 
+    
     let cadena_codigo = req.body.codigo;
     let analizador = new Analizador(cadena_codigo, "editor");
     let ast: AST = analizador.Analizar();
@@ -131,8 +136,6 @@ app.post('/ejecutar', (req, res) => {
             
         }
         
-        
-
         cuerpoHTML = cuerpoHTML + `        
             </tbody>
             </table>
@@ -144,12 +147,15 @@ app.post('/ejecutar', (req, res) => {
         cuerpoHTML = cuerpoHTML + ``;      
         fs.writeFile("./Txt/simbolosHTML.html", cuerpoHTML, (err) => {
             if (err) throw err;
-            console.log("Archivo HTML configurado");
+            console.log("Archivo HTML Simbolos Configurado");
             });
 
     });
 
-});
+
+    
+
+});// FIN POST
 
 
 

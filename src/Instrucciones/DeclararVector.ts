@@ -6,6 +6,11 @@ import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Variable } from "../Entorno/Simbolos/Variable";
 
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
+
 export class DeclararVector extends Instruccion{
     
     tipo1:   Tipo;
@@ -110,6 +115,18 @@ export class DeclararVector extends Instruccion{
 
         actual.insertarVariable(this.id, nueva_var);
     }
+    }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance();
+        const nombreNodo = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nDeclaracion"];\n`)
+        // consola.set_Ast(`${nombreNodo}1[label="\\<Tipo\\>\\n${consola.getTipo(this.tipo)}"];\n`)
+        consola.set_Ast(`${nombreNodo}2[label="\\<Nombre\\>\\n${this.id}"];\n`)
+        consola.set_Ast(`${nombreNodo}->${nombreNodo}1;\n`)
+        consola.set_Ast(`${nombreNodo}->${nombreNodo}2;\n`)
+        // consola.set_Ast(`${nombreNodo}->${this.value?.ast()}\n`)
     }
 
 }

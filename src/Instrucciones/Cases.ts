@@ -6,6 +6,10 @@ import { Instruccion } from "../Entorno/Instruccion";
 import { Nodo } from "../Entorno/Nodo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
 
 export class Cases extends Instruccion {
     
@@ -38,8 +42,32 @@ export class Cases extends Instruccion {
     }
 
 
-    // public getName(){
-    //     return this.exp_condicion
-    // }
+    public ast(): void {
+        const consola = Consola.getInstance()
+        var name_node = `instruccion_${this.linea}_${this.columna}_case`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instrucción\\>\\nCase"];        
+        ${name_node}_AmbitoCase[label="\\<Nuevo ámbito\\>"];
+        ${name_node} -> ${name_node}_AmbitoCase;
+        `)
+        name_node = `${name_node}_AmbitoCase`;
+        var cont = 0;
+        var inst_line_anterior = 0;
+        var inst_col_anterior = 0;
+        for(let sentencia of this.sentencias){
+            if(sentencia instanceof Instruccion){
+                if (cont == 0) {
+                    consola.set_Ast(`${name_node}->instruccion_${sentencia.linea}_${sentencia.columna}_;`)
+                } else {
+                    consola.set_Ast(`instruccion_${inst_line_anterior}_${inst_col_anterior}_->instruccion_${sentencia.linea}_${sentencia.columna}_;`)
+                }
+                inst_line_anterior = sentencia.linea;
+                inst_col_anterior = sentencia.columna;
+                sentencia.ast()
+                cont++;
+            }
+        }
+
+    }
 
 }

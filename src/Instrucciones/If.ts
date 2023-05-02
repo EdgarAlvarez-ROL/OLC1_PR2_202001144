@@ -9,7 +9,12 @@ import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Return } from "./Sentencias_de_Transicion/Return";
 import { Tipo } from "../Entorno/Simbolos/Tipo";
 
-// import Digraph from "graphviz-node/lib/digraph";
+
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
+import { Excepcion } from "../Errores/Excepcion";
 
 export class If extends Instruccion {
     
@@ -31,10 +36,15 @@ export class If extends Instruccion {
         // Verificar tipo booleano
         if(this.exp_condicion.tipo.getPrimitivo() != TipoPrimitivo.Boolean) {
             // * ERROR * 
+            var consola = Consola.getInstance(); //instancia de la consola por posibles errores
+            const error = new Excepcion("Error semántico", `Error en la tercera parte del for declarado, la expresión declarada no es correcta`, this.linea, this.columna);
+            consola.set_Error(error);
             throw new Error("ERROR en el IF.ts la validacion no es de tipo booleano " + this.exp_condicion);
         }
 
         if ( condicion ){
+            // Añadiendo token de IF al AST
+
             // Crear ambito nuevo
             let ambito_if = new Ambito(actual);
 
@@ -88,5 +98,25 @@ export class If extends Instruccion {
             }
         }
     }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance()
+        const name_node = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`
+        ${name_node}[label="\\<Instruccion\\>\\nIf / Else if / Else"];
+        ${name_node}1[label="\\<Sentencia if\\>"];
+        ${name_node}2[label="\\<Sentencia else\\>"];
+        ${name_node}->${name_node}1;
+        ${name_node}->${name_node}2;`);
+        // ${name_node}1->instruccion_${this.bloque.line}_${this.bloque.column}_; 
+        // this.bloque.ast()
+        // if (this.sentencias_else != null) {
+        //     consola.set_Ast(`${name_node}2->instruccion_${this.sentencias_else.linea}_${this.sentencias_else}_`)
+        //     this.sentencias_else.ast()
+        // }
+    }
+
+   
 
 }

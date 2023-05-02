@@ -6,6 +6,11 @@ import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { DeclararVariable } from "./DeclararVariable";
 import { Funcion } from "../Entorno/Simbolos/Funcion";
 
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
+
 export class DeclararFuncion extends Instruccion {
     
     tipo        : Tipo;
@@ -38,5 +43,16 @@ export class DeclararFuncion extends Instruccion {
 
         // actual.insertarFuncion(this.nombre,);
         // throw new Error("Method not implemented.");
+    }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance();
+        const nombreNodo = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nDeclaracion"];\n`)
+        consola.set_Ast(`${nombreNodo}2[label="\\<Nombre\\>\\n${this.nombre}"];\n`)
+        consola.set_Ast(`${nombreNodo}->${nombreNodo}1;\n`)
+        consola.set_Ast(`${nombreNodo}->${nombreNodo}2;\n`)
+        // consola.set_Ast(`${nombreNodo}->${this.nombre?.ast()}\n`)
     }
 }

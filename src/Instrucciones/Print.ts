@@ -3,6 +3,12 @@ import { AST } from "../Entorno/AST";
 import { Expresion } from "../Entorno/Expresion";
 import { Instruccion } from "../Entorno/Instruccion";
 
+
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
+
 export class Print extends Instruccion
 {
 
@@ -29,4 +35,13 @@ export class Print extends Instruccion
         }
     }
     
+
+    public ast(): void {
+        const consola = Consola.getInstance()
+        const nombreNodo = `instruccion_${this.linea}_${this.columna}_`;
+        consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nPrint"];\n`)
+        console.log("PUTAPOUTAPIUTAPSIUDTAPSIUTDAPSUTI")
+        // if (this.value!= null){consola.set_Ast(`    ${nombreNodo}->${this.value.ast()}\n`)}
+    }
+
 }

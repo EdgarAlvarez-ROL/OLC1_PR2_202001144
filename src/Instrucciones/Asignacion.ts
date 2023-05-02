@@ -5,19 +5,25 @@ import { Instruccion } from "../Entorno/Instruccion";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 
 import { Incremento_y_Decremento } from "../Expresiones/Incremento_y_Decremento";
+import { Digraph } from "ts-graphviz";
+import { Node } from "ts-graphviz";
+
+import { Consola } from "../Consola/Consola";
 
 export class Asignacion extends Instruccion {
 
     id:     string;
     exp:    Expresion;
     normal_o_no: String; /*0 asignacion normal | 1 asignacion vector */
+    posicionV: Expresion;
 
-    constructor(id: string, exp: Expresion, normal_o_no: string,  linea: number, columna: number) {
+    constructor(id: string, exp: Expresion, normal_o_no: string, posicionV: Expresion, linea: number, columna: number) {
         
         super(linea, columna);
         this.id = id;
         this.exp = exp;
         this.normal_o_no = normal_o_no;
+        this.posicionV = posicionV;
     }
 
 
@@ -39,14 +45,31 @@ export class Asignacion extends Instruccion {
             variable.asignarValor(valor_asig);
             
         }else{
-            const posicion = this.exp.getValor(actual, global, ast);
+            let valor_asig = this.exp.getValor(actual, global, ast);
+            const posicion = this.posicionV.getValor(actual, global, ast);
             let valor_var = variable.getValor();
-            let devuelta = valor_var[posicion];
+            // let devuelta = valor_var[posicion];
+            valor_var[posicion] = valor_asig.toString();
+            // console.log(valor_var);
+
+            variable.asignarValor(valor_var);
+
         }
         
         
 
         
+
+    }
+
+
+    public ast(): void {
+        const consola = Consola.getInstance()
+        const nombre_nodo =`instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`${nombre_nodo}[label="\\<Instruccion\\>\\nAsignacion"];\n`)
+        consola.set_Ast(`${nombre_nodo}1[label="\\<Identificador\\>\\n{${this.id}}"];\n`)
+        consola.set_Ast(`${nombre_nodo}->${nombre_nodo}1;\n`)
+        // consola.set_Ast(`${nombre_nodo}->${this.value.ast()}\n`)
 
     }
 
