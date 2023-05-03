@@ -38,6 +38,8 @@
     int numero=105;
     print("tipo: "+typeof(numero));
     print("tipo: "+typeof(toString(numero)));
+  	print("------------------TOCHARARRAY-------------------");
+  	print(toCharArray("hola"));
 }
 
 main funcionesEspecialesYNativas();
