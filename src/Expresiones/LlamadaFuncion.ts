@@ -57,7 +57,10 @@ export class LlamadaFuncion extends Expresion {
                                 if (this.lista_exp.length == 0) {
                                     // console.log("Entramos en lista 0");
                                     for(let sentencia of sentenciasFuncion){
-                                        if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_local, global, ast);
+                                        if(sentencia instanceof Instruccion) {
+                                            sentencia.ejecutar(ambito_local, global, ast);
+                                            sentencia.ast()
+                                        } 
                                         if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
                                     }
                                 }else{
@@ -101,10 +104,12 @@ export class LlamadaFuncion extends Expresion {
     
                             if (this.lista_exp.length == 0) {
                                 let x;
+                                
                                 // console.log("Entramos en lista 0");
                                 for(let sentencia of sentenciasFuncion){
                                     if(sentencia instanceof Instruccion) {
                                         x = sentencia.ejecutar(ambito_local, global, ast);
+                                        sentencia.ast();
                                         if(x == undefined){
                                             continue
                                         }else{
@@ -155,6 +160,7 @@ export class LlamadaFuncion extends Expresion {
                                 for(let sentencia of sentenciasFuncion){
                                     if(sentencia instanceof Instruccion) {
                                         x = sentencia.ejecutar(ambito_local, global, ast);
+                                        
                                         if(x == undefined){
                                             continue
                                         }else{

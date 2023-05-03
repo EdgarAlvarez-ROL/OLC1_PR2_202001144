@@ -15,6 +15,7 @@ import { Node } from "ts-graphviz";
 
 import { Consola } from "../Consola/Consola";
 import { Excepcion } from "../Errores/Excepcion";
+import { Breakk } from "./Sentencias_de_Transicion/Breakk";
 
 export class If extends Instruccion {
     
@@ -52,7 +53,8 @@ export class If extends Instruccion {
             let tipotipo;
             let x;
             for(let sentencia of this.sentencias){
-                if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);/* {
+                if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);
+                /* {
                     x = sentencia.ejecutar(ambito_if, global, ast);
                     console.log("IF");
                     console.log(x);
@@ -73,6 +75,22 @@ export class If extends Instruccion {
                     // tipotipo  = x["tipo"];
                     break;
                 }
+
+                if(sentencia instanceof Breakk) {
+                    x = sentencia.ejecutar(ambito_if, global, ast);
+                    if(x == undefined){
+                        continue
+                    }else{
+                        if(x["inst"] == "Breakk"){
+                            console.log("Breakk en IF");
+                           
+                            break;
+                        }else{
+                            continue;
+                        }
+                    }
+                }
+
 
 
 

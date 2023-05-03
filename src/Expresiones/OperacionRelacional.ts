@@ -77,7 +77,7 @@ export class OperacionRelacional extends Expresion {
             
                 return val1 < val2;
             }else {
-
+                
             }
         }
 

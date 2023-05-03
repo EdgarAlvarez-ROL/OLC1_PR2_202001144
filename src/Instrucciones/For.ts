@@ -8,7 +8,7 @@ import { DeclararVariable } from "./DeclararVariable";
 import { Asignacion } from "./Asignacion";
 import { Incremento_y_Decremento } from "../Expresiones/Incremento_y_Decremento";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
-
+import { Return } from "./Sentencias_de_Transicion/Return";
 
 import { Digraph } from "ts-graphviz";
 import { Node } from "ts-graphviz";
@@ -36,20 +36,38 @@ export class For extends Instruccion{
 
         this.comenzar.ejecutar(actual, global, ast);
         // Condicion
-       let val_cond = this.exp.getValor(actual, global, ast);
+        let val_cond = this.exp.getValor(actual, global, ast);
 
      
-        
-       // Verificar tipo booleano
-       if(this.exp.tipo.getPrimitivo() === TipoPrimitivo.Boolean) {
-            
+        let retorno;
+        let tipotipo;
+        let x;
+        // Verificar tipo booleano
+        if(this.exp.tipo.getPrimitivo() === TipoPrimitivo.Boolean) {
+                
             while(val_cond) 
             {   
                     // AQUI VA EL BREAK Y EL CONTINUE
                     let ambito_local = new Ambito(actual);
                     for(let sentencia of this.sentencias){
-                        if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_local, global, ast);
+                        if(sentencia instanceof Instruccion) {
+                            x = sentencia.ejecutar(ambito_local, global, ast);
+                            if(x == undefined){
+                                continue
+                            }else{
+                                if(x["inst"] == "Return"){
+                                    console.log("inst del if Instruccion Return");
+                                    console.log(x);
+                                    retorno = x["valor"];
+                                    tipotipo  = x["tipo"];
+                                    break;
+                                }else{
+                                    continue;
+                                }
+                            }
+                        }
                         if(sentencia instanceof Expresion) sentencia.getValor(ambito_local, global, ast);
+                        
                     }
                     this.actualizar.ejecutar(actual, global, ast);
                     val_cond = this.exp.getValor(actual, global, ast);

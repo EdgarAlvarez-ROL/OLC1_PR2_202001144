@@ -29,6 +29,7 @@ export class Print extends Instruccion
             // console.log(res);
 
             ast.escribirConsola(res.toString());
+            this.ast();
         } else 
         {
             //TODO COLOCAR ERROR
@@ -38,10 +39,10 @@ export class Print extends Instruccion
 
     public ast(): void {
         const consola = Consola.getInstance()
-        const nombreNodo = `instruccion_${this.linea}_${this.columna}_`;
-        consola.set_Ast(`${nombreNodo}[label="\\<Instruccion\\>\\nPrint"];\n`)
-        console.log("PUTAPOUTAPIUTAPSIUDTAPSIUTDAPSUTI")
-        // if (this.value!= null){consola.set_Ast(`    ${nombreNodo}->${this.value.ast()}\n`)}
+        const name_node = `instruccion_${this.linea}_${this.columna}_`
+        consola.set_Ast(`${name_node}[label="\\<Instruccion\\>\\nPrint"];\n`)
+        // console.log("PUTAPOUTAPIUTAPSIUDTAPSIUTDAPSUTI")
+        // if (this.lista_exp = undefined){consola.set_Ast(`    ${nombreNodo}->print}\n`)}
     }
 
 }

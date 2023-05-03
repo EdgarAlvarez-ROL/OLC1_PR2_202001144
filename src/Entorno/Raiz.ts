@@ -9,6 +9,7 @@ import { Nodo } from "./Nodo";
 // import { attribute as _, Digraph, Subgraph, Node, Edge, toDot } from 'ts-graphviz';
 import { Consola } from "../Consola/Consola";
 import { toFile } from 'ts-graphviz/adapter';
+import { Print } from "../Instrucciones/Print";
 
 export class Raiz {
 
@@ -56,6 +57,7 @@ export class Raiz {
             var inst_col_anterior = 0;
             for(let sent of this.sentencias){
                 // if(sentencia instanceof Instruccion) sentencia.ejecutar(ambito_if, global, ast);
+                
                 if(sent instanceof Instruccion)
                     {
                         try {
@@ -76,10 +78,11 @@ export class Raiz {
                         }
                         cont++;
                     }
-                    
+                    if(sent instanceof Print) sent.ast();
             }
 
-            consola.set_Ast("}"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
+            consola.set_Ast("} \n"); //para cerrar el dot porque es más práctico hacerlo aquí que en la gramática
+            console.log("\nDot Graphviz AST");
             console.log(consola.get_Ast());
             /* AST prueba */
             const dot = consola.get_Ast()

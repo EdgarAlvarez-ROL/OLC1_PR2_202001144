@@ -35,7 +35,8 @@
     let toCharArray                 =   require("../Expresiones/Funciones_Reservadas/toCharArray").toCharArray;
 
     // SENTENCIAS DE TRANSFERENCIA
-    let Return                      =   require("../Instrucciones/Sentencias_de_Transicion/Return").Return;                
+    let Return                      =   require("../Instrucciones/Sentencias_de_Transicion/Return").Return;   
+    let Breakk                       =   require("../Instrucciones/Sentencias_de_Transicion/Breakk").Breakk;              
 
 %}
 /* description: Parses end executes mathematical expressions. */
@@ -81,7 +82,8 @@ frac                        (?:\.[0-9]+)
 "main"                          {   return 'tmain';     }  
 "return"                        {   return 'treturn';   }
 "new"                           {   return 'tnew';      }
-
+"break"                         {   return 'tbreak';    }
+"continue"                      {   return 'tcontinue'; }
 
 "toLower"                       {   return 'toLower';   }
 "toUpper"                       {   return 'toUpper';   }
@@ -181,7 +183,7 @@ frac                        (?:\.[0-9]+)
 INICIO
     : SENTENCIAS EOF
     {
-        console.log("Parse de Jison entrada: OK ");
+        console.log("Parser de Jison entrada corriendo");
         let raiz = new Raiz($1);
         $$ = raiz;
         return raiz;
@@ -427,7 +429,9 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '*' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '/' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '^' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
+    |   EXP '%' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     //nuevo
+    //nuevo Incrementar y Decrementar (NO ASIGNA EL VALOR NI LO ACTUALIZA)
     |   EXP '++'                        { $$ = new Incremento_y_Decremento($1, $2, @2.first_line, @2.first_column);}
     |   EXP '--'                        { $$ = new Incremento_y_Decremento($1, $2, @2.first_line, @2.first_column);}
     //nuevo
@@ -443,7 +447,7 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
     |   id                              { $$ = new AccesoVariable($1, @1.first_line, @1.first_column);        }
     |   LLAMADA_FUNCION                 { $$ = $1; }
-    
+    // Movimos la celda hacia abajo
     |   toLower '(' EXP ')'             { $$ = new toLower($3, @1.first_line, @1.first_column); }
     |   toUpper '(' EXP ')'             { $$ = new toUpper($3, @1.first_line, @1.first_column); }
     |   round '(' EXP ')'               { $$ = new round($3, @1.first_line, @1.first_column); }
@@ -461,6 +465,13 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   CELDA                           { $$ = $1; }
 ;
 
-SENTENCIAS_TRANSFERENCIA : treturn EXP ';' { $$ = new Return($2, @1.first_line, @1.first_column); }
-
+SENTENCIAS_TRANSFERENCIA : treturn EXP ';' 
+    { 
+        $$ = new Return($2, @1.first_line, @1.first_column); 
+    }
+    | tbreak ';'  
+    { 
+        $$ = new Breakk(@1.first_line, @1.first_column); 
+    }  
+    | tcontinue ';' 
 ;
