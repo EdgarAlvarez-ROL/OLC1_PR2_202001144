@@ -36,8 +36,11 @@
 
     // SENTENCIAS DE TRANSFERENCIA
     let Return                      =   require("../Instrucciones/Sentencias_de_Transicion/Return").Return;   
-    let Breakk                       =   require("../Instrucciones/Sentencias_de_Transicion/Breakk").Breakk;              
+    let Breakk                      =   require("../Instrucciones/Sentencias_de_Transicion/Breakk").Breakk;    
 
+    // Deteccion de los Errores          
+    let Excepcion                   =   require("../Errores/Excepcion").Excepcion;
+    let Consola                     =   require("../Consola/Consola").Consola;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -133,7 +136,12 @@ frac                        (?:\.[0-9]+)
 "]"                             {return ']';}
 
 
-.                               {}
+.   { 
+        console.log("Error léxico " + yytext + ", en la línea "+yylloc.first_line+", en la columna "+yylloc.first_column); 
+        // console.log("Error léxico" + yy_.yytext + ", en la línea "+yy_.yylloc.first_line+", en la columna "+yy_.yylloc.first_column); 
+        // const error = new Excepcion("Error Lexico"," variable no reconocida: " + yytext, yylloc.first_line, yylloc.first_column);
+        // Consola.set_Error(error);
+    }
 
 
 /lex

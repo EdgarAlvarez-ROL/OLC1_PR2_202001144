@@ -1,0 +1,323 @@
+/* ======================= GRAMATICA ======================= */
+/*  TIPOS DE DATOS PARA UTILIZAR EN LAS DECLARACIONES */
+digit                       [0-9]
+cor1                        "["
+cor2                        "]"
+esc                         "\\"
+int                         (?:[0-9]|[1-9][0-9]+)
+exp                         (?:[eE][-+]?[0-9]+)
+frac                        (?:\.[0-9]+)
+
+/*              EXPRESIONES REGULARES :              */
+//              TERMINALES 
+\s+                             {/* skip whitespace */}
+<<EOF>>                         {return 'EOF';}
+
+/* COMENTARIOS */
+"//".*                                 {/* IGNORE */}
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]    {/* IGNORE */}
+
+/* =================== PALABRAS RESERVADAS =================== */
+"true"                         
+"false"                        
+"int"                          
+"boolean"                      
+"double"                       
+"string"                       
+"char"                         
+"if"                           
+"switch"                       
+"case"                         
+"default"                      
+"while"                        
+"for"                          
+"do"                           
+"else"                         
+"void"                         
+"main"                         
+"return"                       
+"new"                          
+"break"                        
+"continue"                     
+"toLower"                      
+"toUpper"                      
+"round"                        
+"length"                       
+"truncate"                     
+"typeOf"                       
+"tostring"                     
+"toCharArray"                  
+
+
+/* =================== EXPRESIONES REGULARES ===================== */
+([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*           
+\"(?:[{cor1}|{cor2}]|["\\"]["bnrt/["\\"]]|[^"["\\"])*\"        
+\'(?:{esc}["bfnrt/{esc}]|{esc}"u"[a-fA-F0-9]{4}|[^"{esc}])\'   
+{int}{frac}\b                                                  
+{int}\b                                                        
+
+/* ======================== SIGNOS ======================= */
+"$"                          
+"++"                         
+"--"                         
+"+"                          
+"-"                          
+"*"                          
+"/"                          
+"^"                          
+"%"                          
+"("                          
+")"                          
+"=="                         
+"="                          
+","                          
+":"                          
+";"                          
+"||"                         
+"&&"                         
+"!="                         
+"!"                          
+"<="                         
+">="                         
+">"                          
+"<"                          
+"{"                          
+"}"                          
+"["                          
+"]"                          
+
+
+
+/* ================= ASOCIATIVIDAD y PRECEDENCIA DE OPERADORES ===============
+/*Operaciones logicas*/
+'||'
+'&&'
+'^'
+'==', '!='
+'>=', '<=', '<', '>'
+'+', '-'
+'*', '/'
+'%'
+'!'
+'.' '[' ']'
+'++', '--'
+'?', ':'
+negativo, '!', '(' 
+
+// ============= NO TERMINALES =============
+INICIO
+SENTENCIAS EOF
+SENTENCIA
+BLOQUE_SENTENCAS
+DECLARACION          
+FUNCION                  
+ASIGNACION         
+SENTENCIAS_TRANSFERENCIA 
+IF        
+ELSE               
+SWITCH                   
+LLAMADA_FUNCION     
+WHILE                    
+FOR                      
+DOWHILE  
+CELDA  
+TIPO  
+EXP
+LISTA_EXP     
+CASOES
+DEFAULTED
+CASESS
+COMENTARIOS
+COMENZAR
+ACTUALIZA
+ACTUALIZAR
+FUNCION
+LISTA_PARAM
+CASTEO
+LLAMADA_FUNCION
+SENTENCIAS_TRANSFERENCIA
+
+
+
+/* ================= INICIO DE LA GRAMATICA ===============
+INICIO;
+
+//  Empieza el metodo para poder detectar la gramatica
+INICIO
+    : SENTENCIAS EOF
+    ;
+
+//  Inicio de un ciclo se sentencias 
+SENTENCIAS :    SENTENCIAS SENTENCIA
+            |   SENTENCIA
+;
+
+//  Detecta un bloque de sentencias vacio o lleno
+BLOQUE_SENTENCAS : '{' SENTENCIAS '}'
+                |  '{' '}'
+;
+
+//  Sentencias que se pueden detectar en cualquier parte de la gramatica
+SENTENCIA :     DECLARACION ';'            
+            |   FUNCION                    
+            |   ASIGNACION ';'             
+            |   SENTENCIAS_TRANSFERENCIA   
+            |   IF                         
+            |   SWITCH                     
+            |   LLAMADA_FUNCION  ';'       
+            |   WHILE                      
+            |   FOR                        
+            |   DOWHILE                    
+;
+
+//  Detecta las celdas de un vector
+CELDA   : id '[' EXP ']'
+;
+
+//  Detecta la declaracion de las variables
+DECLARACION : TIPO '[' ']' id '=' tnew TIPO '[' EXP ']'
+            | TIPO '[' ']' id '=' '{' LISTA_EXP '}'
+            | TIPO  id '=' EXP 
+            | TIPO  id  
+            | TIPO id '=' '(' CASTEO ')' EXP
+;
+
+//  Detecta un switch en el lenguaje
+SWITCH :    tswitch '(' EXP ')' '{' CASOES DEFAULTED '}'  
+       |    tswitch '(' EXP ')' '{' CASOES '}'            
+       |    tswitch '(' EXP ')' '{' DEFAULTED '}'         
+;
+
+//  Detecta los case del switch en ciclo
+CASOES :  CASOES CASESS    
+       |  CASESS            
+;
+
+//  Detecta los case del switch
+CASESS:     tcase EXP ':' SENTENCIAS 
+;
+
+//  Detecta el default del switch
+DEFAULTED:  tdefault ':' SENTENCIAS 
+;
+
+//  Detecta las asignaciones de variables
+ASIGNACION  :   id '=' EXP 
+            |   id '[' EXP ']' '=' EXP  
+            |   id '++' 
+            |   id '--'       
+;
+
+//  Detecta los if
+IF      :   tif '(' EXP ')' BLOQUE_SENTENCAS
+        |   tif '(' EXP ')' BLOQUE_SENTENCAS ELSE
+;
+
+//  Detecta los else
+ELSE    :   telse IF
+        |   telse BLOQUE_SENTENCAS
+;
+
+//  Detecta los while
+WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
+;
+
+// Detecta los for
+FOR:    tfor '(' COMENZAR  ';' EXP ';' ACTUALIZAR ')' BLOQUE_SENTENCAS
+;
+
+//  Da inicio a una declaracion o asignacion para el for
+COMENZAR    : DECLARACION    
+            | ASIGNACION    
+;
+
+//  Actualiza la variable del for con su respectiva asignacion
+ACTUALIZAR  : ASIGNACION     
+;
+
+//  Detecta el DoWhile
+DOWHILE     : tdo BLOQUE_SENTENCAS twhile '(' EXP ')' ';' 
+;
+
+//  Detecta la declaracion de funciones 
+FUNCION:        TIPO    id '('  ')' BLOQUE_SENTENCAS
+            |   tvoid   id '('  ')' BLOQUE_SENTENCAS
+            |   TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
+            |   tvoid   id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS        
+;
+
+//  Detecta el tipo de dato que se esta ingresado segun la gramatica
+TIPO    :       tinteger                 
+        |       tboolean                 
+        |       tstring                  
+        |       tdouble                  
+        |       tchar                    
+; 
+
+//  Realiza un casteo de los datos para cambiar su tipo
+CASTEO  :       tinteger               
+        |       tdouble                
+        |       tchar                  
+; 
+
+//  Genera una lista de parametro de tipos con ids
+LISTA_PARAM :   LISTA_PARAM ',' TIPO id
+            |   TIPO id
+;
+
+//  Detecta valores de expresones y los agrupa en una lista
+LISTA_EXP : LISTA_EXP ',' EXP
+        |   EXP
+;
+
+//  Detecta una funcion y llama a su resultado o sus expresiones
+LLAMADA_FUNCION : id '('')'             
+                | id '(' LISTA_EXP ')'  
+                | tmain id '('')'                 
+                | tmain id '(' LISTA_EXP ')'      
+;
+
+//  Detecta tos las expresiones y del lenguaje para realizar las funciones aritmeticas, logicas y relacionales para realizar operaciones del lenguaje
+EXP :   EXP '+' EXP                     
+    |   EXP '-' EXP                     
+    |   EXP '*' EXP                     
+    |   EXP '/' EXP                     
+    |   EXP '^' EXP                     
+    |   EXP '%' EXP                     
+    |   EXP '++'                        
+    |   EXP '--'                        
+    |   '-' EXP %prec negativo          
+    |   '(' EXP ')'                     
+    |   EXP '=='  EXP                   
+    |   EXP '!='  EXP                   
+    |   EXP '<'   EXP                   
+    |   EXP '>'   EXP                   
+    |   EXP '<='  EXP                   
+    |   EXP '>='  EXP                   
+    |   EXP '&&'  EXP                   
+    |   EXP '||'  EXP                   
+    |   id                              
+    |   LLAMADA_FUNCION                 
+    |   toLower '(' EXP ')'             
+    |   toUpper '(' EXP ')'             
+    |   round '(' EXP ')'               
+    |   length '(' EXP ')'              
+    |   truncate '(' EXP ')'            
+    |   typeOf  '(' EXP ')'             
+    |   TTtoString   '(' EXP ')'        
+    |   toCharArray '(' EXP ')'         
+    |   entero                          
+    |   decimal                         
+    |   caracter                        
+    |   cadena                          
+    |   ttrue                           
+    |   tfalse                          
+    |   CELDA                                    
+;
+
+//  Detecta sentencias de transferencia del lenguaje para devolver, detener o continuar con las funciones del programa
+SENTENCIAS_TRANSFERENCIA 
+    : treturn EXP ';' 
+    | tbreak ';'  
+    | tcontinue ';' 
+;
