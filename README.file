@@ -1,1 +1,14 @@
-Parte de master probando el git a ver si funciona esta vez
+Pasos para colocar el "node_modules/"
+
+npm install typescript -D
+
+npm install express -E
+
+npm install --save @types/express -D
+
+npm install ts-node-dev -D
+
+cualquier error correr 
+npm init -y 
+&& configurar package.json en la seccion de scripts con: ("dev": "ts-node-dev src/app.ts")
+  	
